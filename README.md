@@ -1,52 +1,140 @@
-# SimulEnfanceFrontend
+# 🎯 Simul'Enfance Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.13.
+Application web Angular pour simuler et calculer les tarifs des services périscolaires municipaux (cantine, accueil périscolaire, centre de loisirs).
 
-## Development server
+## 📋 Description
 
-To start a local development server, run:
+Simul'Enfance permet aux familles de :
+- Calculer les tarifs des services périscolaires en fonction de leur quotient familial
+- Sauvegarder et gérer plusieurs simulations
+- Consulter l'historique de leurs calculs
+- Gérer leur profil utilisateur
 
-```bash
-ng serve
-```
+## 🚀 Technologies
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Framework** : Angular 19.2
+- **UI** : TailwindCSS 4.x
+- **Authentification** : JWT via intercepteurs HTTP
+- **Routing** : Guards pour la protection des routes
+- **Build** : Angular CLI
 
-## Code scaffolding
+## 📦 Installation
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Prérequis
+- Node.js 18+ et npm
+- Backend Simul'Enfance lancé sur `http://localhost:8080`
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Étapes
 
 ```bash
-ng build
+# Cloner le repository
+git clone https://github.com/dainata92/simul-enfance-frontend.git
+cd simul-enfance-frontend
+
+# Installer les dépendances
+npm install
+
+# Lancer le serveur de développement
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+L'application sera accessible sur `http://localhost:4200/`
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 🛠️ Scripts disponibles
 
 ```bash
-ng test
+npm start          # Lance le serveur de développement (ng serve)
+npm run build      # Build de production dans dist/
+npm test           # Exécute les tests unitaires (Karma/Jasmine)
+npm run watch      # Build en mode watch
 ```
 
-## Running end-to-end tests
+## 📁 Structure du projet
 
-For end-to-end (e2e) testing, run:
+```
+src/
+├── app/
+│   ├── components/        # Composants de l'application
+│   │   ├── calculator/    # Calculateur de tarifs
+│   │   ├── dashboard/     # Dashboard utilisateur
+│   │   ├── login/         # Page de connexion
+│   │   ├── signup/        # Page d'inscription
+│   │   ├── admin-dashboard/ # Dashboard admin
+│   │   └── user-profile/  # Profil utilisateur
+│   ├── services/          # Services (API calls)
+│   │   ├── auth.service.ts      # Gestion authentification JWT
+│   │   └── pricing.service.ts   # API calcul tarifs
+│   ├── guards/            # Guards de routing
+│   │   ├── auth.guard.ts        # Vérification authentification
+│   │   └── role.guard.ts        # Contrôle des rôles
+│   ├── interceptors/      # Intercepteurs HTTP
+│   │   └── auth.interceptor.ts  # Injection token JWT
+│   └── environments/      # Configuration par environnement
+└── styles.css             # Styles globaux TailwindCSS
+```
+
+## 🔐 Authentification
+
+L'application utilise JWT (JSON Web Tokens) :
+- Le token est stocké dans `localStorage`
+- Un intercepteur HTTP ajoute automatiquement le header `Authorization: Bearer <token>`
+- Les guards protègent les routes nécessitant une authentification
+
+## 🌐 Endpoints API
+
+Le frontend communique avec le backend via :
+- `POST /api/auth/login` - Connexion
+- `POST /api/auth/register` - Inscription
+- `GET /api/calculate` - Calcul de tarifs
+- `GET /api/simulations` - Liste des simulations
+- `POST /api/simulations` - Créer une simulation
+- `GET /api/user/profile` - Profil utilisateur
+
+## 🎨 Personnalisation TailwindCSS
+
+Configuration dans `tailwind.config.js` :
+- Couleurs personnalisées
+- Typographie
+- Breakpoints responsive
+
+## 📝 Développement
+
+### Générer un composant
+```bash
+ng generate component components/mon-composant
+```
+
+### Générer un service
+```bash
+ng generate service services/mon-service
+```
+
+## 🚢 Déploiement
+
+### Build de production
+```bash
+npm run build
+```
+
+Les fichiers compilés seront dans `dist/simul-enfance-frontend/`
+
+### Déploiement recommandé
+- **Vercel** : `vercel --prod`
+- **Netlify** : Drag & drop du dossier `dist/`
+- **GitHub Pages** : Via Angular CLI
+
+## 🔗 Liens
+
+- **Backend** : [simul-enfance-backend](https://github.com/dainata92/simul-enfance-backend)
+- **Documentation Angular** : https://angular.dev
+
+## 👥 Auteur
+
+Développé pour la soutenance - Simul'Enfance
+
+## 📄 Licence
+
+Projet académique
 
 ```bash
 ng e2e
