@@ -1,0 +1,221 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center space-x-4">
+          <button
+            (click)="backToDashboard()"
+            class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Dashboard
+          </button>
+          <h1 class="text-xl font-bold text-gray-900">
+            {{ isOwnProfile ? 'Mon Profil' : 'Profil Utilisateur' }}
+          </h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span class="text-sm text-gray-700">
+            <span class="font-medium">{{ currentUser?.name || currentUser?.email }}</span>
+            <span [ngClass]="getRoleBadgeClass(currentUser?.role || 'USER')" class="ml-2 px-2 py-1 text-xs font-semibold rounded-full">
+              {{ currentUser?.role }}
+            </span>
+          </span>
+          <button
+            (click)="logout()"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+          >
+            Déconnexion
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="flex justify-center items-center py-12">
+        <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="rounded-md bg-red-50 p-4 mb-6">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-red-800">{{ errorMessage }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="rounded-md bg-green-50 p-4 mb-6">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-green-800">{{ successMessage }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Card -->
+      <div *ngIf="!loading && !errorMessage && user" class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <!-- Header avec avatar -->
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-8">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="h-24 w-24 rounded-full bg-white flex items-center justify-center overflow-hidden">
+                <img *ngIf="user.profilePicture" [src]="user.profilePicture" alt="Photo de profil" class="h-full w-full object-cover">
+                <svg *ngIf="!user.profilePicture" class="h-16 w-16 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-6">
+              <h2 class="text-3xl font-bold text-white">{{ user.name || 'Utilisateur' }}</h2>
+              <p class="text-blue-100 mt-1">{{ user.email }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations -->
+        <div class="px-6 py-6">
+          <div class="grid grid-cols-1 gap-6">
+            <!-- Photo de profil (mode édition) -->
+            <div *ngIf="editMode" class="border-b border-gray-200 pb-4">
+              <dt class="text-sm font-medium text-gray-500 mb-2">Photo de profil</dt>
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0">
+                  <div class="h-20 w-20 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <img *ngIf="imagePreview || user.profilePicture" [src]="imagePreview || user.profilePicture" alt="Photo de profil" class="h-full w-full object-cover">
+                    <svg *ngIf="!imagePreview && !user.profilePicture" class="h-12 w-12 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <label class="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    Changer la photo
+                    <input type="file" accept="image/*" (change)="onFileSelected($event)" class="sr-only">
+                  </label>
+                  <button *ngIf="imagePreview" type="button" (click)="removeImage()" class="ml-2 text-sm text-red-600 hover:text-red-800">
+                    Supprimer
+                  </button>
+                  <p class="mt-1 text-xs text-gray-500">PNG, JPG jusqu'à 2MB</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="border-b border-gray-200 pb-4">
+              <dt class="text-sm font-medium text-gray-500 mb-1">Email</dt>
+              <dd *ngIf="!editMode" class="text-lg text-gray-900">{{ user.email }}</dd>
+              <div *ngIf="editMode">
+                <input
+                  type="email"
+                  [(ngModel)]="formData.email"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="email@exemple.com"
+                />
+              </div>
+            </div>
+
+            <!-- Prénom -->
+            <div class="border-b border-gray-200 pb-4">
+              <dt class="text-sm font-medium text-gray-500 mb-1">Prénom</dt>
+              <dd *ngIf="!editMode" class="text-lg text-gray-900">{{ user.firstName || 'Non renseigné' }}</dd>
+              <div *ngIf="editMode">
+                <input
+                  type="text"
+                  [(ngModel)]="formData.firstName"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Votre prénom"
+                />
+              </div>
+            </div>
+
+            <!-- Nom -->
+            <div class="pb-4">
+              <dt class="text-sm font-medium text-gray-500 mb-1">Nom</dt>
+              <dd *ngIf="!editMode" class="text-lg text-gray-900">{{ user.lastName || 'Non renseigné' }}</dd>
+              <div *ngIf="editMode">
+                <input
+                  type="text"
+                  [(ngModel)]="formData.lastName"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Votre nom"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-gray-50 px-6 py-4">
+          <div class="flex justify-end space-x-3">
+            <button
+              *ngIf="isOwnProfile && !editMode"
+              (click)="startEdit()"
+              class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+            >
+              Modifier mon profil
+            </button>
+
+            <button
+              *ngIf="isOwnProfile && editMode"
+              (click)="cancelEdit()"
+              class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+            >
+              Annuler
+            </button>
+
+            <button
+              *ngIf="isOwnProfile && editMode"
+              (click)="saveProfile()"
+              [disabled]="saving"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+            >
+              {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message informatif pour USER -->
+      <div *ngIf="!loading && !errorMessage && isOwnProfile && user?.role === 'USER'" class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-blue-800">Bienvenue sur votre profil</h3>
+            <p class="mt-1 text-sm text-blue-700">
+              Ceci est votre espace personnel. Vous pouvez consulter vos informations et gérer votre compte.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
