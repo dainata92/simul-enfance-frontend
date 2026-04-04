@@ -31,12 +31,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Si déjà connecté, redirige selon le rôle
-    if (this.authService.isLoggedIn()) {
-      this.authService.redirectByRole();
-      return;
-    }
-
     // Récupère l'URL de retour depuis les query params
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
   }

@@ -135,9 +135,7 @@ export class DashboardComponent implements OnInit {
    * Navigation vers le profil personnel
    */
   navigateToProfile(): void {
-    console.log('navigateToProfile - currentUser:', this.currentUser);
     if (this.currentUser) {
-      console.log('Navigating to profile with ID:', this.currentUser.id);
       this.router.navigate(['/user/profile', this.currentUser.id]);
     } else {
       console.error('Cannot navigate: currentUser is null');

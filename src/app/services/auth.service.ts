@@ -52,8 +52,6 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/register`, registerData)
       .pipe(
         tap(response => {
-          console.log('Raw register response:', response);
-
           // Créer l'objet user à partir de la réponse
           const user: User = {
             id: response.id || 1,
@@ -68,7 +66,6 @@ export class AuthService {
             user: user
           };
 
-          console.log('Normalized register response:', normalizedResponse);
           this.setSession(normalizedResponse as any);
           this.currentUserSubject.next(user);
         })
@@ -82,10 +79,6 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, { email, password })
       .pipe(
         tap(response => {
-          console.log('Raw login response:', response);
-          console.log('response.id:', response.id);
-          console.log('response.name:', response.name);
-
           // Créer l'objet user à partir de la réponse
           const user: User = {
             id: response.id || 1, // Utiliser 1 comme fallback au lieu de 0
@@ -100,8 +93,6 @@ export class AuthService {
             user: user
           };
 
-          console.log('Normalized response with user:', normalizedResponse);
-          console.log('User ID being saved:', user.id);
           this.setSession(normalizedResponse as any);
           this.currentUserSubject.next(user);
         })

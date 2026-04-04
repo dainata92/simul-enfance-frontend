@@ -33,10 +33,7 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Si déjà connecté, redirige
-    if (this.authService.isLoggedIn()) {
-      this.authService.redirectByRole();
-    }
+    // Initialisation du composant
   }
 
   /**
@@ -77,7 +74,6 @@ export class SignupComponent implements OnInit {
 
     this.authService.register(registerData).subscribe({
       next: (response) => {
-        console.log('Inscription réussie:', response);
         this.successMessage = 'Inscription réussie ! Redirection...';
 
         // Redirige après 1 seconde

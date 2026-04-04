@@ -90,14 +90,6 @@ export class CalculatorComponent implements OnInit {
   onSubmit(): void {
     if (this.calculatorForm.invalid) {
       this.calculatorForm.markAllAsTouched();
-      // Debug : afficher les champs invalides
-      console.log('Formulaire invalide. Champs en erreur :');
-      Object.keys(this.calculatorForm.controls).forEach(key => {
-        const control = this.calculatorForm.get(key);
-        if (control?.invalid) {
-          console.log(`- ${key}:`, control.errors, 'Valeur:', control.value);
-        }
-      });
       return;
     }
 
