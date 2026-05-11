@@ -4,5 +4,5 @@
  */
 export const environment = {
   production: true,
-  apiUrl: 'https://simul-enfance-backend.onrender.com/api'
+  apiUrl: 'https://simul-enfance-backend.onrender.com'
 };
