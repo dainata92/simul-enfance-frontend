@@ -20,6 +20,8 @@ export interface LoginResponse {
   role: string;
   id?: number;
   name?: string;
+  firstName?: string;
+  lastName?: string;
   user?: User;
   profilePicture?: string;
 }
@@ -57,7 +59,9 @@ export class AuthService {
             id: response.id || 1,
             email: response.email,
             role: this.normalizeRole(response.role),
-            name: response.name || response.email.split('@')[0],
+            name: response.name,
+            firstName: response.firstName,
+            lastName: response.lastName,
             profilePicture: response.profilePicture
           };
 
@@ -84,7 +88,9 @@ export class AuthService {
             id: response.id || 1, // Utiliser 1 comme fallback au lieu de 0
             email: response.email,
             role: this.normalizeRole(response.role),
-            name: response.name || response.email.split('@')[0],
+            name: response.name,
+            firstName: response.firstName,
+            lastName: response.lastName,
             profilePicture: response.profilePicture
           };
 
